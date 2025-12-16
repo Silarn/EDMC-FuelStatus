@@ -1,16 +1,15 @@
 import tkinter as tk
-import logging
-import l10n
+from EDMCLogging import get_plugin_logger
+from l10n import translations as tr
 import functools
 import os
 
 from typing import Optional, Tuple, Dict, Any
-from config import appname
 
-plugin_name = os.path.basename(os.path.dirname(__file__))
-logger = logging.getLogger(f'{appname}.{plugin_name}')
+plugin_name = "FuelStatus"
+logger = get_plugin_logger(f'{plugin_name}')
 
-_ = functools.partial(l10n.Translations.translate, context=__file__)
+_ = functools.partial(tr.tl, context=os.path.dirname(__file__))
 
 label: Optional[tk.Label]
 status: Optional[tk.Label]
@@ -20,7 +19,7 @@ reservoir: Optional[float] = None
 
 def plugin_start3(plugin_dir: str) -> str:
   logger.debug('fuelstatus plugin loaded')
-  return "FuelStatus"
+  return plugin_name
 
 def plugin_stop() -> None:
   pass
@@ -33,7 +32,7 @@ def plugin_app(parent) -> Tuple[tk.Label,tk.Label]:
   label = tk.Label(parent, text="")
   status = tk.Label(parent, text="")
   update_status()
-  return (label, status)
+  return label, status
 
 def dashboard_entry(cmdr: str, is_beta: bool, entry: Dict[str, Any]) -> None:
   global main_tank, reservoir
